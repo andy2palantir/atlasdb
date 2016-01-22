@@ -35,7 +35,7 @@ import com.palantir.atlasdb.transaction.api.TransactionManager;
 import com.palantir.atlasdb.transaction.api.TransactionReadSentinelBehavior;
 import com.palantir.atlasdb.transaction.api.TransactionTask;
 import com.palantir.atlasdb.transaction.impl.ReadOnlyTransaction;
-import com.palantir.atlasdb.transaction.service.TransactionServices;
+import com.palantir.atlasdb.transaction.service.KVSBasedTransactionService;
 import com.palantir.ptoss.util.Throwables;
 
 /**
@@ -160,8 +160,7 @@ public static AtlasShellConnection createAtlasShellConnection(final AtlasContext
     public AtlasShellTransactionAdapter unsafeReadOnlyTransaction() {
         return new AtlasShellTransactionAdapter(new ReadOnlyTransaction(
                 keyValueService,
-                TransactionServices
-                        .createTransactionService(keyValueService),
+                new KVSBasedTransactionService(keyValueService),
                 Long.MAX_VALUE,
                 AtlasDbConstraintCheckingMode.NO_CONSTRAINT_CHECKING,
                 TransactionReadSentinelBehavior.THROW_EXCEPTION,

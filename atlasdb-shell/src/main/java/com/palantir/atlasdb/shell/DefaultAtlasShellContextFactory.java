@@ -31,8 +31,8 @@ import com.palantir.atlasdb.transaction.impl.ConflictDetectionManagers;
 import com.palantir.atlasdb.transaction.impl.ShellAwareReadOnlyTransactionManager;
 import com.palantir.atlasdb.transaction.impl.SnapshotTransactionManager;
 import com.palantir.atlasdb.transaction.impl.SweepStrategyManagers;
+import com.palantir.atlasdb.transaction.service.KVSBasedTransactionService;
 import com.palantir.atlasdb.transaction.service.TransactionService;
-import com.palantir.atlasdb.transaction.service.TransactionServices;
 import com.palantir.lock.LockClient;
 import com.palantir.lock.LockServerOptions;
 import com.palantir.lock.LockService;
@@ -57,7 +57,7 @@ public class DefaultAtlasShellContextFactory implements AtlasShellContextFactory
                 return false;
             }
         });
-        TransactionService transactionService = TransactionServices.createTransactionService(keyValueService);
+        TransactionService transactionService = new KVSBasedTransactionService(keyValueService);
         TimestampService timestampService = new InMemoryTimestampService();
         keyValueService.initializeFromFreshInstance();
         SnapshotTransactionManager.createTables(keyValueService);
@@ -91,7 +91,7 @@ public class DefaultAtlasShellContextFactory implements AtlasShellContextFactory
                 return false;
             }
         });
-        TransactionService transactionService = TransactionServices.createTransactionService(kv);
+        TransactionService transactionService = new KVSBasedTransactionService(kv);
         TimestampBoundStore boundStore = SimpleKvsTimestampBoundStore.create(kv);
         TimestampService timestampService = PersistentTimestampService.create(boundStore);
         kv.initializeFromFreshInstance();
@@ -121,7 +121,7 @@ public class DefaultAtlasShellContextFactory implements AtlasShellContextFactory
                                 .safetyDisabled(false)
                                 .autoRefreshNodes(false)
                                 .build()));
-        TransactionService transactionService = TransactionServices.createTransactionService(kv);
+        TransactionService transactionService = new KVSBasedTransactionService(kv);
         TransactionManager transactionManager = new ShellAwareReadOnlyTransactionManager(
                 kv,
                 transactionService,
