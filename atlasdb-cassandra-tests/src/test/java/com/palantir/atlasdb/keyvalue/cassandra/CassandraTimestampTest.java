@@ -22,7 +22,7 @@ import org.junit.Test;
 import com.palantir.atlasdb.AtlasDbConstants;
 import com.palantir.atlasdb.cassandra.CassandraKeyValueServiceConfigManager;
 import com.palantir.atlasdb.cassandra.ImmutableCassandraKeyValueServiceConfig;
-import com.palantir.timestamp.MultipleRunningTimestampServiceError;
+import com.palantir.timestamp.MultipleRunningTimestampServiceException;
 import com.palantir.timestamp.TimestampBoundStore;
 
 public class CassandraTimestampTest {
@@ -81,7 +81,7 @@ public class CassandraTimestampTest {
         try {
             ts2.storeUpperLimit(limit + 20);
             Assert.fail();
-        } catch (MultipleRunningTimestampServiceError e) {
+        } catch (MultipleRunningTimestampServiceException e) {
             // expected
         }
         Assert.assertEquals(limit + 20, ts.getUpperLimit());
@@ -93,7 +93,7 @@ public class CassandraTimestampTest {
         try {
             ts2.storeUpperLimit(limit + 40);
             Assert.fail();
-        } catch (MultipleRunningTimestampServiceError e) {
+        } catch (MultipleRunningTimestampServiceException e) {
             // expected
         }
     }
